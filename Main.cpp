@@ -37,9 +37,21 @@ void main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	GLfloat vertices[] = {
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.0f, 0.5f, 0.0f
+		//basic verteces
+		-0.5f, -0.5f, 0.0f, //bottom-left 
+		0.5f, -0.5f, 0.0f, //bottom-right
+		0.0f, 0.5f, 0.0f, //top
+
+		//additionals verteces
+		0.0f, -0.5f, 0.0f, //bottom
+		-0.5f / 2, 0.0f, 0.0f, //left-middle
+		0.5f / 2, 0.0f, 0.0f //right-middle
+	};
+
+	GLuint indices[] {
+		0, 4, 3, //bottom-left triangle
+		3, 1, 5, //bottom-right triangle
+		4, 5, 2 //top triangle
 	};
 
 	//creating and checking window state
@@ -92,26 +104,30 @@ void main() {
 	// VERTEX OBJECT
 	//========================================================================//
 
-	GLuint VAO, VBO;
+	GLuint VAO, VBO, EBO;
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
 
 	glBindVertexArray(VAO); //before binding buffer (for me: "You're stupid")
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);      // ->
 	// -> (vertex shader index, data size (3 for vertex - x,y,z), type, normallize (for GL_INT), stride between data for each verteces, pointer to the beggining of the data in the array)
+
+	// 0 - index in vertex attribute - layout (location = x) in SORCE vertex shader
+	glEnableVertexAttribArray(0); // index in array
 	
 	//removing current VBO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	// 0 - index in vertex attribute - layout (location = x) in SORCE vertex shader
-	glEnableVertexAttribArray(0); // index in array
-
-
+	glBindVertexArray(0); //finish settings for VAO
 	//========================================================================//
 	// WINDOW
 	//========================================================================//
@@ -122,13 +138,14 @@ void main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(window);
 		glfwPollEvents();  //All "poll" events with window (such as window resizing and etc.)
 	}
 
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
 	glDeleteProgram(shaderProgram);
 
 	//closing window and deleting
