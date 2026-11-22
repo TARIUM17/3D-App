@@ -34,6 +34,9 @@
     <Filter Include="Исходные файлы\Classes\Shader Class">
       <UniqueIdentifier>{f227087a-13ea-4cc9-84ab-7acf617b77af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Исходные файлы\Classes\Camera class">
+      <UniqueIdentifier>{543d456c-3135-40d7-a2f8-2d64603733a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -60,6 +63,9 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Исходные файлы\Classes\Texture Class</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Исходные файлы\Classes\Camera class</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderClass.h">
@@ -80,12 +86,21 @@
     <ClInclude Include="Texture.h">
       <Filter>Исходные файлы\Classes\Texture Class</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Исходные файлы\Classes\Camera class</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="default.frag">
       <Filter>Исходные файлы\Filters</Filter>
     </Text>
     <Text Include="default.vert">
+      <Filter>Исходные файлы\Filters</Filter>
+    </Text>
+    <Text Include="light.frag">
+      <Filter>Исходные файлы\Filters</Filter>
+    </Text>
+    <Text Include="light.vert">
       <Filter>Исходные файлы\Filters</Filter>
     </Text>
   </ItemGroup>
