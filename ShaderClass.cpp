@@ -1,5 +1,26 @@
 #include "ShaderClass.h"
 
+// Error function. For error checking
+void compileErrors(unsigned int shader, const char* type) {
+	int hasFinished;
+	char infoLog[1024];
+	if (type != "PROGRAM") {	//Linker checker
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &hasFinished);
+		if (!hasFinished) {
+			glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+			std::cout << "SHADER_COMPILATION_ERROR for: " << type << "\n" << infoLog << "\n---\n";
+		}
+	}
+	else {
+		glGetProgramiv(shader, GL_LINK_STATUS, &hasFinished);
+		if (!hasFinished) {
+			glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+			std::cout << "SHADER_LINKING_ERROR for: " << type << "\n" << infoLog << "\n---\n";
+		}
+	}
+}
+
+// just reading
 std::string getFileContent(const char* file) {
 	std::ifstream in(file, std::ios::in | std::ios::binary);
 	if (!in.is_open()) {
@@ -25,22 +46,26 @@ Shader::Shader(const char* vertexFile, const char* fragmentFile)
     const char* vertexSource = vertexCode.c_str();
     const char* fragmentSource = fragmentCode.c_str();
 
-	//Compile all shaders
+	//vertex shader
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexSource, NULL); // ->
 	//->      (shader, count, *char *string (text for shaders. Writed above), lenth (don't need it) )
 	glCompileShader(vertexShader);
-
+	compileErrors(vertexShader, "VERTEX");
+	
+	//Fragment shader
 	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
 	glCompileShader(fragmentShader);
+	compileErrors(vertexShader, "FRAGMENT");
 
-
+	//Shader programm
 	ID = glCreateProgram();
 	//Attaching shaders to programm
 	glAttachShader(ID, vertexShader);
 	glAttachShader(ID, fragmentShader);
 	glLinkProgram(ID);
+	compileErrors(ID, "PROGRAM");
 
 	//Deleting shaders 'cause they're already in programm 
 	glDeleteShader(vertexShader);

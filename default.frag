@@ -1,6 +1,16 @@
 #version 330 core
+
+// out colors in RGBA
 out vec4 fragment;
+
+
+// inputs from vertex shader
+in vec3 color;
+in vec2 texCoords;
+
+uniform sampler2D tex0;
+
 void main()
 {
-    fragment = vec4(0.8f, 0.3f, 0.02f, 1.0f);
+    fragment = texture(tex0, texCoords);
 }

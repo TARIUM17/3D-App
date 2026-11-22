@@ -1,28 +1,33 @@
 
 #include "BasicLibs.h"
 #include "ShaderClass.h"
+#include "Texture.h"
 #include "VAO.h"
 #include "VBO.h"
 #include "EBO.h"
 
-GLfloat vertices[] = {
-	//basic verteces
-	-0.5f, -0.5f, 0.0f, //bottom-left
-	0.5f, -0.5f, 0.0f, //bottom-right
-	0.0f, 0.5f, 0.0f, //top
+GLfloat vertices[] = {	     // Colors			 // Texture plasment
+	-0.5f, -0.5f,  0.5f,     1.0f, 0.0f, 0.0f, 	 0.0f, 0.0f,	
+	 0.5f, -0.5f,  0.5f,     0.0f, 1.0f, 0.0f,	 1.0f, 0.0f,	
+	 0.5f, -0.5f, -0.5f,     0.0f, 0.0f, 1.0f,	 1.0f, 1.0f,	
+	-0.5f, -0.5f, -0.5f,	 1.0f, 1.0f, 1.0f,	 0.0f, 1.0f,
 
-	//additionals verteces
-	0.0f, -0.5f, 0.0f, //bottom
-	-0.5f / 2, 0.0f, 0.0f, //left-middle
-	0.5f / 2, 0.0f, 0.0f //right-middle
+	 0.0f,  0.5f,  0.0f,     1.0f, 1.0f, 1.0f, 	 0.5f, 0.5f, // top corner
 };
 
 GLuint indices[]{
-	0, 4, 3, //bottom-left triangle
-	3, 1, 5, //bottom-right triangle
-	4, 5, 2 //top triangle
+	//bottom
+	0, 1, 2,
+	0, 2, 3,
+	//sides
+	0, 1, 4,
+	1, 2, 4,
+	2, 3, 4,
+	3, 0, 4
 };
 
+unsigned int width = 800;
+unsigned int height = 800;
 
 void main() {
 	//initialization of GLFW
@@ -38,7 +43,7 @@ void main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
 	//creating and checking window state
-	GLFWwindow* window = glfwCreateWindow(800, 600, "3D_Test", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, "3D_Test", NULL, NULL);
 	if (!window) {
 		std::cout << "== Failing creating window ==";
 		glfwTerminate();
@@ -54,8 +59,9 @@ void main() {
 		exit(EXIT_FAILURE);
 	}
 
-	//specify viewport window (from 0,0 to 800,600)
-	glViewport(0, 0, 800, 600);
+	//specify viewport window (from 0,0 to 800,800)
+	glViewport(0, 0, width, height);
+	glEnable(GL_DEPTH_TEST);
 
 	Shader shaderProgram("default.vert", "default.frag");
 
@@ -65,9 +71,17 @@ void main() {
 	VBO VBO1(vertices, sizeof(vertices));
 	EBO EBO1(indices, sizeof(indices));
 
-	VAO1.LinkVBO(VBO1, 0);
+	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	VAO1.Unbind();
 	VBO1.Unbind();
+
+	GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
+
+	// texture
+	Texture si_fi("si-fi.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+	si_fi.texUnit(shaderProgram, "tex0", 0);
 
 	//========================================================================//
 	// WINDOW
@@ -75,11 +89,42 @@ void main() {
 
 	while (!glfwWindowShouldClose(window))
 	{
-		glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		float scale = 1.0f;
+		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		shaderProgram.Activate();
+		
+		///////////////////////////////////////////////////////////
+		// initializes all used basic matrix
+		glm::mat4 model(1.0f);
+		model = glm::scale(model, glm::vec3(scale));
+		// adjusting rotation of the model
+		float angle = (float)glfwGetTime() * glm::radians(50.0f);
+		model = glm::rotate(model, angle, glm::vec3(0.1f, 0.2f, 0.0f)); 
+		// -> where x, y, z is axis of rotation (e.g. 0 1 0)
+
+		glm::mat4 view(1.0f);
+		view = glm::translate(view, glm::vec3(0.0f, -0.0f, -3.5f));
+
+		glm::mat4 projection(1.0f);
+		projection = glm::perspective(glm::radians(45.0f), (float)width / float(height), 0.01f, 100.0f);
+
+		///////////////////////////////////////////////////////////
+		// Linking uniform for each mat4
+		int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+		int projectionLoc = glGetUniformLocation(shaderProgram.ID, "proj");
+		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+
+		///////////////////////////////////////////////////////////
+		si_fi.Bind();
 		VAO1.Bind();
-		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(window);
 		glfwPollEvents();  //All "poll" events with window (such as window resizing and etc.)
 	}
@@ -87,6 +132,7 @@ void main() {
 	VAO1.Delete();
 	VBO1.Delete();
 	EBO1.Delete();
+	si_fi.Delete();
 	shaderProgram.Delete();
 	//closing window and deleting
 	glfwDestroyWindow(window);

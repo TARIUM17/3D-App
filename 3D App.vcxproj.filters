@@ -19,17 +19,20 @@
     <Filter Include="Исходные файлы\Classes">
       <UniqueIdentifier>{7dc133e3-758a-4dca-85e7-043cda73f448}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Исходные файлы\Classes\ShaderClass">
-      <UniqueIdentifier>{f227087a-13ea-4cc9-84ab-7acf617b77af}</UniqueIdentifier>
+    <Filter Include="Исходные файлы\Classes\Texture Class">
+      <UniqueIdentifier>{92ab62f7-58d0-48fc-92b8-2a383d61fb90}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Исходные файлы\Classes\VBO_Class">
-      <UniqueIdentifier>{bdbada10-4971-43ac-aec1-4e8a0fc0a03e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Исходные файлы\Classes\EBO_Class">
+    <Filter Include="Исходные файлы\Classes\EBO Class">
       <UniqueIdentifier>{f9efaf46-1348-43a1-a683-a102698ff4c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Исходные файлы\Classes\VAO_Class">
+    <Filter Include="Исходные файлы\Classes\VAO Class">
       <UniqueIdentifier>{f09f3b6f-abc7-440d-bf81-d31a3ae147bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Classes\VBO Class">
+      <UniqueIdentifier>{bdbada10-4971-43ac-aec1-4e8a0fc0a03e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Classes\Shader Class">
+      <UniqueIdentifier>{f227087a-13ea-4cc9-84ab-7acf617b77af}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -40,33 +43,42 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="ShaderClass.cpp">
-      <Filter>Исходные файлы\Classes\ShaderClass</Filter>
+      <Filter>Исходные файлы\Classes\Shader Class</Filter>
     </ClCompile>
     <ClCompile Include="VBO.cpp">
-      <Filter>Исходные файлы\Classes\VBO_Class</Filter>
+      <Filter>Исходные файлы\Classes\VBO Class</Filter>
     </ClCompile>
     <ClCompile Include="EBO.cpp">
-      <Filter>Исходные файлы\Classes\EBO_Class</Filter>
+      <Filter>Исходные файлы\Classes\EBO Class</Filter>
     </ClCompile>
     <ClCompile Include="VAO.cpp">
-      <Filter>Исходные файлы\Classes\VAO_Class</Filter>
+      <Filter>Исходные файлы\Classes\VAO Class</Filter>
+    </ClCompile>
+    <ClCompile Include="stb.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Исходные файлы\Classes\Texture Class</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderClass.h">
-      <Filter>Исходные файлы\Classes\ShaderClass</Filter>
+      <Filter>Исходные файлы\Classes\Shader Class</Filter>
     </ClInclude>
     <ClInclude Include="VBO.h">
-      <Filter>Исходные файлы\Classes\VBO_Class</Filter>
+      <Filter>Исходные файлы\Classes\VBO Class</Filter>
     </ClInclude>
     <ClInclude Include="BasicLibs.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="EBO.h">
-      <Filter>Исходные файлы\Classes\EBO_Class</Filter>
+      <Filter>Исходные файлы\Classes\EBO Class</Filter>
     </ClInclude>
     <ClInclude Include="VAO.h">
-      <Filter>Исходные файлы\Classes\VAO_Class</Filter>
+      <Filter>Исходные файлы\Classes\VAO Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Исходные файлы\Classes\Texture Class</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
